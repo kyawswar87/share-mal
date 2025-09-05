@@ -1,6 +1,6 @@
-# Shalmal v2
+# Share Mal
 
-A Spring Boot application built with Java 17 and Maven, following enterprise-grade development standards.
+A full-stack bill splitting application with Spring Boot backend and React frontend, built with Java 17 and Maven, following enterprise-grade development standards.
 
 ## Prerequisites
 
@@ -25,10 +25,33 @@ A Spring Boot application built with Java 17 and Maven, following enterprise-gra
    Or build and run the JAR:
    ```bash
    mvnw clean package
-   java -jar target/shalmal_v2-0.0.1-SNAPSHOT.jar
+   java -jar target/share-mal-0.0.1-SNAPSHOT.jar
    ```
 
 3. The application will start on `http://localhost:8080`
+
+### Frontend Application
+
+The project includes a React frontend for the bill splitting interface:
+
+1. Navigate to the frontend directory:
+   ```bash
+   cd frontend
+   ```
+
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+3. Start the frontend development server:
+   ```bash
+   npm start
+   ```
+
+4. The frontend will be available at `http://localhost:3000`
+
+For detailed frontend documentation, see [frontend/README.md](frontend/README.md).
 
 ### Available Endpoints
 
@@ -39,14 +62,16 @@ A Spring Boot application built with Java 17 and Maven, following enterprise-gra
 
 ### API Endpoints
 
-- **Users API**: `http://localhost:8080/api/v1/users`
-  - `GET /api/v1/users` - Get all users
-  - `GET /api/v1/users/{id}` - Get user by ID
-  - `GET /api/v1/users/username/{username}` - Get user by username
-  - `POST /api/v1/users` - Create new user
-  - `PUT /api/v1/users/{id}` - Update user
-  - `DELETE /api/v1/users/{id}` - Delete user
-  - `GET /api/v1/users/status/{status}` - Get users by status
+- **Bills API**: `http://localhost:8080/api/v1/bills`
+  - `GET /api/v1/bills` - Get all bills
+  - `GET /api/v1/bills/{id}` - Get bill by ID
+  - `POST /api/v1/bills` - Create new bill
+  - `PUT /api/v1/bills/{id}` - Update bill
+  - `DELETE /api/v1/bills/{id}` - Delete bill
+  - `GET /api/v1/bills/status/{status}` - Get bills by status
+  - `GET /api/v1/bills/search?title={title}` - Search bills by title
+  - `PATCH /api/v1/bills/{id}/pay` - Toggle payment status for person
+  - `PUT /api/v1/bills/{id}/status` - Update bill status
 
 ### Database
 
@@ -57,18 +82,18 @@ A Spring Boot application built with Java 17 and Maven, following enterprise-gra
 - **Console**: `http://localhost:8080/h2-console`
 
 #### Production (MySQL)
-- **JDBC URL**: `jdbc:mysql://localhost:3306/shalmal_v2`
+- **JDBC URL**: `jdbc:mysql://localhost:3306/share_mal`
 - **Username**: Set via `DB_USERNAME` environment variable
 - **Password**: Set via `DB_PASSWORD` environment variable
 
 ## Project Structure
 
 ```
-shalmal_v2/
-├── src/
+share-mal/
+├── src/                                # Backend Spring Boot application
 │   ├── main/
 │   │   ├── java/
-│   │   │   └── com/shalmal/shalmal_v2/
+│   │   │   └── com/sharemal/
 │   │   │       ├── controller/          # REST controllers
 │   │   │       ├── service/            # Business logic services
 │   │   │       ├── repository/         # Data access layer
@@ -76,20 +101,35 @@ shalmal_v2/
 │   │   │       ├── dto/                # Data Transfer Objects
 │   │   │       ├── config/             # Configuration classes
 │   │   │       ├── exception/          # Custom exceptions
+│   │   │       ├── enums/              # Enumeration types
 │   │   │       ├── util/               # Utility classes
 │   │   │       └── ShalmalV2Application.java
 │   │   └── resources/
 │   │       └── application.properties
 │   └── test/
 │       └── java/
-│           └── com/shalmal/shalmal_v2/
+│           └── com/sharemal/
 │               ├── controller/          # Controller tests
 │               ├── service/            # Service tests
 │               ├── repository/         # Repository tests
 │               └── ...
-├── pom.xml
-├── PROJECT_RULES.md
-└── README.md
+├── frontend/                           # React frontend application
+│   ├── src/
+│   │   ├── components/                 # React components
+│   │   ├── services/                   # API service layer
+│   │   ├── types/                      # TypeScript definitions
+│   │   ├── utils/                      # Utility functions
+│   │   └── ...
+│   ├── public/                         # Static assets
+│   ├── package.json                    # Frontend dependencies
+│   └── README.md                       # Frontend documentation
+├── docs/                               # Project documentation
+│   ├── features/                       # Feature specifications
+│   └── PRODUCT_BRIEF.md                # Product overview
+├── commands/                           # Development commands
+├── pom.xml                            # Maven configuration
+├── PROJECT_RULES.md                   # Development standards
+└── README.md                          # This file
 ```
 
 ## Dependencies
@@ -110,6 +150,10 @@ shalmal_v2/
 ## Features
 
 ### ✅ Implemented Features
+- **Bill Management**: Create, view, edit, and delete bills
+- **Person Management**: Add participants to bills and track payment status
+- **Payment Tracking**: Toggle payment status for individual participants
+- **Search & Filter**: Search bills by title and filter by status
 - **RESTful API** with proper HTTP status codes
 - **Global Exception Handling** with `@ControllerAdvice`
 - **Input Validation** using Bean Validation
@@ -121,13 +165,17 @@ shalmal_v2/
 - **CORS Configuration** for frontend integration
 - **Comprehensive Testing** with unit tests
 - **Standardized Response Format** for all APIs
+- **React Frontend** with responsive design
 
 ### 🏗️ Architecture
+- **Full-Stack Application**: React frontend + Spring Boot backend
 - **Layered Architecture**: Controller → Service → Repository
 - **DTO Pattern** for data transfer
 - **Exception Hierarchy** with custom exceptions
 - **Configuration Management** with profiles
 - **Audit Support** with JPA auditing
+- **RESTful API Design** with standardized responses
+- **Component-Based Frontend** with React and TypeScript
 
 ## Development
 
@@ -140,7 +188,7 @@ mvn test
 mvn test jacoco:report
 
 # Run specific test class
-mvn test -Dtest=UserServiceTest
+mvn test -Dtest=BillServiceTest
 ```
 
 ### Code Quality
@@ -174,7 +222,7 @@ The project is configured to use Flyway for database migrations (when implemente
 mvn clean package -Pprod
 
 # Run with production profile
-java -jar target/shalmal_v2-0.0.1-SNAPSHOT.jar --spring.profiles.active=prod
+java -jar target/share-mal-0.0.1-SNAPSHOT.jar --spring.profiles.active=prod
 ```
 
 ## API Response Format
